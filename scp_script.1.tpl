@@ -1,4 +1,4 @@
-{{!--sleep 60--}}
+sleep 60
 scp -i /home/ubuntu/.ssh/id_rsa \
 -o StrictHostKeyChecking=no \
 -o UserKnownHostsFile=/dev/null \

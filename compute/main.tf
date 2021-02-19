@@ -15,9 +15,7 @@ data "aws_ami" "si3mshady_ami" {
 resource "random_id" "rid" {
     byte_length = 2
     count = var.instance_count
-    keepers = {
-        key_name = var.key_name
-    }
+   
 }
 
 resource "aws_key_pair" "si3mshadykp" {
@@ -48,6 +46,26 @@ resource "aws_instance" "si3mshadyEC2" {
     )
     root_block_device {
     volume_size = var.vol_size
+  }
+  
+   provisioner "remote-exec" {
+       connection {
+           type="ssh"
+           user="ubuntu"
+           host=self.public_ip
+           private_key=file("/home/ubuntu/.ssh/id_rsa")
+       }
+       script = "${path.cwd}/delay.sh"
+   }
+  
+  provisioner "local-exec" {
+      command = templatefile("${path.cwd}/scp_script.tpl",
+      {
+          nodeip = self.public_ip
+          k3s_path = "${path.cwd}/../"
+          nodename = self.tags.Name
+      }
+      )
   }
     
 }
