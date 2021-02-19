@@ -12,19 +12,20 @@ module "networking" {
   private_cidrs     = [for i in range(1, 255, 2) : cidrsubnet(local.vpc_cidr, 8, i)]
 
 
-  }
-  
+}
+
 
 module "compute" {
-  source = "./compute"
-  public_sg = module.networking.public_sg
-  public_subnets =  module.networking.public_subnets
-  instance_count = 3
-  key_name = "si3mshadykp"
+  source          = "./compute"
+  public_sg       = module.networking.public_sg
+  public_subnets  = module.networking.public_subnets
+  instance_count  = 1
+  key_name        = "si3mshadykp"
   public_key_path = "/home/ubuntu/.ssh/id_rsa.pub"
-  instance_type = "t2.2xlarge"
-  vol_size = 60 
-  user_data_path = "${path.root}/userdata.tpl"
+  instance_type   = "t2.2xlarge"
+  vol_size        = 60
+  user_data_path  = "${path.root}/userdata.tpl"
+  appPort         = 5000
 }
 
  
